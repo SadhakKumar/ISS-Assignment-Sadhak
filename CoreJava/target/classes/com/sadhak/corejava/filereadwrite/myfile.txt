@@ -1,0 +1,2 @@
+Hello from Java File I/O!
+This is appended content.
