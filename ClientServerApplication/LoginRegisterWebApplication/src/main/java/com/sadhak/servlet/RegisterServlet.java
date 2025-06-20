@@ -12,33 +12,34 @@ import jakarta.servlet.annotation.*;
 @WebServlet("/register")
 public class RegisterServlet extends HttpServlet {
 
-    private Connection conn;
+    private Connection databaseConnection;
 
     public void init() {
-        conn = DBConnection.getConnection();
+        databaseConnection = DBConnection.getConnection();
     }
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
-        String name = request.getParameter("name");
-        String email = request.getParameter("email");
-        String password = request.getParameter("password");
+        // Retrieve user details from the request
+        String userName = request.getParameter("name");
+        String userEmail = request.getParameter("email");
+        String userPassword = request.getParameter("password");
 
         response.setContentType("text/html");
         PrintWriter out = response.getWriter();
 
         try {
-            if (conn == null) {
+            if (databaseConnection == null) {
                 out.println("<h3>Database connection not available</h3>");
                 return;
             }
 
             // Check if user already exists
             String checkSql = "SELECT * FROM users WHERE email = ?";
-            PreparedStatement checkStmt = conn.prepareStatement(checkSql);
-            checkStmt.setString(1, email);
+            PreparedStatement checkStmt = databaseConnection.prepareStatement(checkSql);
+            checkStmt.setString(1, userEmail);
             ResultSet checkRs = checkStmt.executeQuery();
 
             if (checkRs.next()) {
@@ -49,10 +50,10 @@ public class RegisterServlet extends HttpServlet {
 
             // Register user
             String insertSql = "INSERT INTO users (name, email, password) VALUES (?, ?, ?)";
-            PreparedStatement pst = conn.prepareStatement(insertSql);
-            pst.setString(1, name);
-            pst.setString(2, email);
-            pst.setString(3, password);
+            PreparedStatement pst = databaseConnection.prepareStatement(insertSql);
+            pst.setString(1, userName);
+            pst.setString(2, userEmail);
+            pst.setString(3, userPassword);
 
             int rowsInserted = pst.executeUpdate();
 
@@ -75,8 +76,8 @@ public class RegisterServlet extends HttpServlet {
     @Override
     public void destroy() {
         try {
-            if (conn != null)
-                conn.close();
+            if (databaseConnection != null)
+                databaseConnection.close();
         } catch (SQLException e) {
             e.printStackTrace();
         }

@@ -54,3 +54,12 @@
   - [x] Redirect to login page after logout
   - [x] Error message and redisplay login form on incorrect credentials
   - [x] JavaScript-based validations for form input
+
+## 5. Python Pre-Joining Training
+
+- [x] Variables & Constants
+- [x] Data Types
+- [x] Type Conversion
+- [x] Control Flow
+- [x] Functions
+- [x] Error Handling
